@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "cifar10_resnet18_randaugment_affine",
+    "Title": "Prioritizing Geometric and Policy-Based Augmentation for ResNet18 Image Classification",
+    "Short Hypothesis": "A ResNet18 classifier trained with the highest-impact image augmentations, especially rotation, translation, scaling, and RandAugment, will improve validation accuracy and robustness over a compact CNN baseline.",
+    "Related Work": "Residual networks remain a strong and efficient baseline for image classification, while data augmentation is one of the most reliable ways to improve generalization on small image benchmarks. RandAugment reduces manual augmentation policy search by applying a small number of randomly selected transformations with a fixed magnitude. Geometric transformations such as rotation, translation, and scale jitter directly improve invariance to common image perturbations, making them a high-priority intervention for CIFAR-style classification.",
+    "Abstract": "This experiment upgrades the image classification pipeline from a compact CNN baseline to a CIFAR-adapted ResNet18 and prioritizes the augmentations expected to have the largest impact: rotation, translation, scale jitter, and RandAugment. The training pipeline uses a fast low-compute setting with optional CIFAR-10 loading and a synthetic fallback for restricted environments. The main metric is validation accuracy, with validation loss and training stability tracked across epochs. The experiment tests whether a stronger residual architecture combined with policy-based and geometric augmentation improves generalization under modest compute.",
+    "Experiments": [
+      "Train a CIFAR-adapted ResNet18 with a 3x3 stride-1 stem and no initial max pool for 32x32 images.",
+      "Apply the first-priority augmentation stack: RandAugment plus explicit affine rotation, translation, and scale jitter.",
+      "Use label smoothing, AdamW, cosine learning-rate decay, dropout-free residual classification, and weight decay as regularization.",
+      "Compare validation accuracy and validation loss against the previous compact CNN synthetic-pattern baseline when the same environment is available.",
+      "If CIFAR-10 download is unavailable, use a deterministic CIFAR-like synthetic fallback to validate the augmented ResNet18 training pipeline."
+    ],
+    "Risk Factors and Limitations": [
+      "CIFAR-10 download may fail in restricted environments, so fallback synthetic results validate the pipeline but do not prove CIFAR-10 performance.",
+      "RandAugment and affine transforms add CPU preprocessing overhead, which may slow training on systems with limited data-loader capacity.",
+      "Aggressive geometric augmentation can hurt accuracy if magnitudes are too large for small 32x32 images.",
+      "Short low-compute runs may underestimate the final accuracy of ResNet18 compared with a fully tuned schedule."
+    ]
+  }
+]
